@@ -55,5 +55,4 @@ dkms.conf
 .idea/
 
 # CMake
-CMakeLists.txt
 cmake-build-debug/
