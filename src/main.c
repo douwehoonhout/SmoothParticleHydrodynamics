@@ -31,8 +31,10 @@ int main() {
         //printf("x: %lf density: %lf velocity: %lf rho: %lf \n", particles[i].x, particles[i].density, particles[i].velocity, particles[i].rho);
     }
 
-    for (int i = 0; i < particle_list1.n; i++) {
-        particles[i].velocity = ((1/(3*max_speed))*(max_speed/((1/7)-(1/(3*max_speed)))))*((particles[i].x/7)-1);
+    for (int i = particle_list1.n - 2; i >= 0; i--) {
+        double left_hand_side = (1.0 / (3.0 * max_speed)) / (max_speed / ((1.0 / 7.0) - (1.0 / (3.0 * max_speed))));
+        double right_hand_side = (particles[i].x - particles[i + 1].x) / 7 - 1;
+        particles[i].velocity = left_hand_side * right_hand_side;
         if (particles[i].velocity < 0) {
             particles[i].velocity = 0;
         }
