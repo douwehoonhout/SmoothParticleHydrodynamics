@@ -44,6 +44,7 @@ int main() {
     for (int i = 0; i < particle_list1.n; i++) {
         printf("x: %lf density: %lf velocity: %lf rho: %lf \n", particles[i].x, particles[i].density, particles[i].velocity, particles[i].rho);
     }
+    printf("Zou git nu eindelijk werken?");
 
     return 0;
 }
