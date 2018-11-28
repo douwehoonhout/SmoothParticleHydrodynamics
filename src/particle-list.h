@@ -11,5 +11,6 @@
     } particle_list;
 
     particle_list alloc_particles(int size);
+    particle_list read_from_file();
     void initialize_particles(particle_list particle_list1, int size);
 #endif //SMOOTHPARTICLEHYDRODYNAMICS_PARTICLE_LIST_H

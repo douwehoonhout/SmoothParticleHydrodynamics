@@ -5,6 +5,7 @@ typedef struct particle {
     double x;
     double density;
     double velocity;
+    double rho;
 } particle;
 
 particle* alloc_particle();
