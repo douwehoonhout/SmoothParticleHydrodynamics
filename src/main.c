@@ -11,7 +11,7 @@ int main() {
     omp_set_num_threads(4);
     particle_list particle_list1 = read_from_file();
     particle* particles = particle_list1.particles;
-    double time_step = 0.1;
+    double time_step = 0.1, max_speed = 33.33;
 
     // Calculate dRho / dt
     for (int i = 0; i < particle_list1.n; i++) {
@@ -20,7 +20,7 @@ int main() {
             if (i == j) {
                 continue;
             }
-            rho += (particles[i].velocity - particles[j].velocity) * smoothing_funtion(particles[i], particles[j], 160);
+            rho += (particles[i].velocity - particles[j].velocity) * smoothing_funtion(particles[i], particles[j], 201);
         }
         printf("Rho result %lf \n", rho);
         particles[i].rho = rho;
@@ -28,9 +28,22 @@ int main() {
 
     for (int i = 0; i < particle_list1.n; i++) {
         particles[i].x = particles[i].velocity * time_step + 1 / particles[i].rho;
-        printf("x: %lf density: %lf velocity: %lf rho: %lf \n", particles[i].x, particles[i].density, particles[i].velocity, particles[i].rho);
+        //printf("x: %lf density: %lf velocity: %lf rho: %lf \n", particles[i].x, particles[i].density, particles[i].velocity, particles[i].rho);
     }
 
+    for (int i = 0; i < particle_list1.n; i++) {
+        particles[i].velocity = ((1/(3*max_speed))*(max_speed/((1/7)-(1/(3*max_speed)))))*((particles[i].x/7)-1);
+        if (particles[i].velocity < 0) {
+            particles[i].velocity = 0;
+        }
+        if (particles[i].velocity) {
+            particles[i].velocity = max_speed;
+        }
+    }
+
+    for (int i = 0; i < particle_list1.n; i++) {
+        printf("x: %lf density: %lf velocity: %lf rho: %lf \n", particles[i].x, particles[i].density, particles[i].velocity, particles[i].rho);
+    }
 
     return 0;
 }
