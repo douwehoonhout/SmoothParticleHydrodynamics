@@ -26,14 +26,19 @@ int main() {
         particles[i].rho = rho;
     }
 
+    // Calculate new x
     for (int i = 0; i < particle_list1.n; i++) {
-        particles[i].x = particles[i].velocity * time_step + 1 / particles[i].rho;
+        particles[i].x = particles[i].x + particles[i].velocity * time_step + 1 / particles[i].rho;
         //printf("x: %lf density: %lf velocity: %lf rho: %lf \n", particles[i].x, particles[i].density, particles[i].velocity, particles[i].rho);
     }
 
+    // Calculate new velocities
+    particles[9].velocity = max_speed;
     for (int i = particle_list1.n - 2; i >= 0; i--) {
-        double left_hand_side = (1.0 / (3.0 * max_speed)) / (max_speed / ((1.0 / 7.0) - (1.0 / (3.0 * max_speed))));
-        double right_hand_side = (particles[i].x - particles[i + 1].x) / 7 - 1;
+        double left_hand_side = (1.0 / (3.0 )) / (1.0 / 7.0) - (1.0 / (3.0 * max_speed));
+        printf("Should be 13,2 %lf \n", left_hand_side);
+        double right_hand_side = (particles[i + 1].x - particles[i].x) / 7.0 - 1.0;
+        printf("x1 = %lf x2 = %lf Should be 13,2 %lf \n", particles[i].x, particles[i + 1].x, right_hand_side);
         particles[i].velocity = left_hand_side * right_hand_side;
         if (particles[i].velocity < 0) {
             particles[i].velocity = 0;
@@ -46,7 +51,6 @@ int main() {
     for (int i = 0; i < particle_list1.n; i++) {
         printf("x: %lf density: %lf velocity: %lf rho: %lf \n", particles[i].x, particles[i].density, particles[i].velocity, particles[i].rho);
     }
-    printf("Zou git nu eindelijk werke   n?");
 
     return 0;
 }
