@@ -36,7 +36,7 @@ int main() {
         if (particles[i].velocity < 0) {
             particles[i].velocity = 0;
         }
-        if (particles[i].velocity) {
+        if (particles[i].velocity > max_speed) {
             particles[i].velocity = max_speed;
         }
     }
