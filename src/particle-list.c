@@ -47,3 +47,38 @@ particle_list read_from_file() {
     return particle_list1;
 }
 
+void initial_write(particle_list particle_list1) {
+    FILE *f = fopen("../output/result.txt", "w");
+    if (f == NULL)
+    {
+        printf("Error opening file!\n");
+        exit(1);
+    }
+
+    particle* particles = particle_list1.particles;
+    fprintf(f, "id:  x:  vi:  where t = 0\n");
+
+    for (int i = 0; i < particle_list1.n; i++) {
+        fprintf(f, "%d %lf %lf \n", i, particles[i].x, particles[i].velocity);
+    }
+
+    fclose(f);
+}
+
+void write_to_file(particle_list particle_list1, double time) {
+    FILE *f = fopen("../output/result.txt", "a");
+    if (f == NULL)
+    {
+        printf("Error opening file!\n");
+        exit(1);
+    }
+
+    particle* particles = particle_list1.particles;
+    fprintf(f, "id:  x:  vi:   where t = %lf \n", time);
+
+    for (int i = 0; i < particle_list1.n; i++) {
+        fprintf(f, "%d %lf %lf \n", i, particles[i].x, particles[i].velocity);
+    }
+
+    fclose(f);
+}

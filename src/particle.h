@@ -4,6 +4,7 @@
 typedef struct particle {
     double x;
     double density;
+    double ve;
     double velocity;
     double rho;
 } particle;
