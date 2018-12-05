@@ -3,15 +3,16 @@
 #include <omp.h>
 #include <time.h>
 #include "particle.h"
+#include <math.h>
 #include "particle-list.h"
 #include "smooting-function.h"
 
-#define DECELERATE 2
-#define H 400
+#define DECELERATE 1.5
+#define H 300.0
 #define MAX_SPEED 33.33
 #define NR_ITERATIONS 2000
-#define TAU 5
-#define TIME_STEP  0.4
+#define TAU 5.0
+#define TIME_STEP  0.05
 
 int main() {
 
@@ -37,11 +38,15 @@ int main() {
 
         // Calculate new x
         for (int i = 0; i < particle_list1.n; i++) {
-            particles[i].x = particles[i].x + particles[i].velocity * TIME_STEP + 1 / particles[i].rho;
+            particles[i].x = particles[i].x + particles[i].velocity * TIME_STEP;
         }
 
         // Calculate wanted velocities
         particles[9].ve = MAX_SPEED;
+        if ((int)time % 40 > 20) {
+            particles[9].ve = MAX_SPEED / 10;
+        }
+
         for (int i = particle_list1.n - 2; i >= 0; i--) {
             double left_hand_side = (1.0 / (3.0 )) / (1.0 / 7.0) - (1.0 / (3.0 * MAX_SPEED));
             double right_hand_side = (particles[i + 1].x - particles[i].x) / 7.0 - 1.0;
@@ -60,12 +65,14 @@ int main() {
             if (deltaV < 0) {
                 particles[i].velocity = particles[i].velocity + deltaV / DECELERATE * TIME_STEP;
             } else {
-                particles[i].velocity = particles[i].velocity + (deltaV) / TAU * TIME_STEP;
+                particles[i].velocity = particles[i].velocity + deltaV / TAU * TIME_STEP;
             }
         }
 
         time += TIME_STEP;
         write_to_file(particle_list1, time);
+
+
     }
 
     return 0;
