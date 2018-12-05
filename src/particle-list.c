@@ -59,7 +59,7 @@ void initial_write(particle_list particle_list1) {
     fprintf(f, "id:  x:  vi:  where t = 0\n");
 
     for (int i = 0; i < particle_list1.n; i++) {
-        fprintf(f, "%d %lf %lf \n", i, particles[i].x, particles[i].velocity);
+        fprintf(f, "%d, %lf, %lf \n", i, particles[i].x, particles[i].velocity);
     }
 
     fclose(f);
@@ -77,7 +77,7 @@ void write_to_file(particle_list particle_list1, double time) {
     fprintf(f, "id:  x:  vi:   where t = %lf \n", time);
 
     for (int i = 0; i < particle_list1.n; i++) {
-        fprintf(f, "%d %lf %lf \n", i, particles[i].x, particles[i].velocity);
+        fprintf(f, "%d, %lf, %lf \n", i, particles[i].x, particles[i].velocity);
     }
 
     fclose(f);

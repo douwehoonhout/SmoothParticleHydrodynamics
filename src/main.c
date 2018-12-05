@@ -6,11 +6,12 @@
 #include "particle-list.h"
 #include "smooting-function.h"
 
-#define H 201
+#define DECELERATE 2
+#define H 400
 #define MAX_SPEED 33.33
-#define NR_ITERATIONS 100
+#define NR_ITERATIONS 2000
 #define TAU 5
-#define TIME_STEP  0.1
+#define TIME_STEP  0.4
 
 int main() {
 
@@ -39,8 +40,8 @@ int main() {
             particles[i].x = particles[i].x + particles[i].velocity * TIME_STEP + 1 / particles[i].rho;
         }
 
-        // Calculate new velocities
-        particles[9].ve = 0;
+        // Calculate wanted velocities
+        particles[9].ve = MAX_SPEED;
         for (int i = particle_list1.n - 2; i >= 0; i--) {
             double left_hand_side = (1.0 / (3.0 )) / (1.0 / 7.0) - (1.0 / (3.0 * MAX_SPEED));
             double right_hand_side = (particles[i + 1].x - particles[i].x) / 7.0 - 1.0;
@@ -55,7 +56,12 @@ int main() {
 
         // Calculate new velocities
         for (int i = 0; i < particle_list1.n; i++) {
-            particles[i].velocity = particles[i].velocity + (particles[i].ve - particles[i].velocity) / TAU * TIME_STEP;
+            const double deltaV = (particles[i].ve - particles[i].velocity);
+            if (deltaV < 0) {
+                particles[i].velocity = particles[i].velocity + deltaV / DECELERATE * TIME_STEP;
+            } else {
+                particles[i].velocity = particles[i].velocity + (deltaV) / TAU * TIME_STEP;
+            }
         }
 
         time += TIME_STEP;
