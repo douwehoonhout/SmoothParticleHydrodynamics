@@ -13,6 +13,8 @@
 #define NR_ITERATIONS 2000
 #define TAU 5.0
 #define TIME_STEP  0.05
+#define RHO_C 0.025
+#define RHO_J 0.125
 
 int main() {
 
@@ -48,8 +50,8 @@ int main() {
         }
 
         for (int i = particle_list1.n - 2; i >= 0; i--) {
-            double left_hand_side = (1.0 / (3.0 )) / (1.0 / 7.0) - (1.0 / (3.0 * MAX_SPEED));
-            double right_hand_side = (particles[i + 1].x - particles[i].x) / 7.0 - 1.0;
+            double left_hand_side = (RHO_C*MAX_SPEED) / (RHO_J - RHO_C);
+            double right_hand_side = (particles[i + 1].x - particles[i].x) * RHO_J - 1.0;
             particles[i].ve = left_hand_side * right_hand_side;
             if (particles[i].ve < 0) {
                 particles[i].ve = 0;
