@@ -45,10 +45,10 @@ int main() {
 
         // Calculate wanted velocities
         particles[9].ve = MAX_SPEED;
-        if ((int)time % 40 > 20) {
-            particles[9].ve = MAX_SPEED / 10;
+        /*if ((int)time % 40 > 20) {
+            particles[9].ve = MAX_SPEED / 1.5;
         }
-
+*/
         for (int i = particle_list1.n - 2; i >= 0; i--) {
             double left_hand_side = (RHO_C*MAX_SPEED) / (RHO_J - RHO_C);
             double right_hand_side = (particles[i + 1].x - particles[i].x) * RHO_J - 1.0;
