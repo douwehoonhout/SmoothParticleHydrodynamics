@@ -25,11 +25,11 @@ double smoothing_funtion(particle particle1, particle particle2, int h) {
     }
 
     if (r < -0.5) {
-        return pow(2 + 2 * r, 2) * alpha;
+        return pow(2 + 2 * r, 2) * -alpha;
     }
 
     if (r < 0) {
-        return (-8 * r - 12 * r * r) * alpha;
+        return (-8 * r - 12 * r * r) * -alpha;
     }
 
     if (r < 1) {

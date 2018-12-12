@@ -8,11 +8,11 @@
 #include "smooting-function.h"
 
 #define DECELERATE 5.0
-#define H 201.0
+#define H 150.0
 #define MAX_SPEED 33.33
 #define NR_ITERATIONS 2000
 #define TAU 5.0
-#define TIME_STEP  0.03
+#define TIME_STEP  0.05
 #define RHO_C 0.025
 #define RHO_J 0.125
 
