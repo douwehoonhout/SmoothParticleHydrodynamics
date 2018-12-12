@@ -6,7 +6,7 @@
 #ifndef SMOOTHPARTICLEHYDRODYNAMICS_PARTICLE_LIST_H
 #define SMOOTHPARTICLEHYDRODYNAMICS_PARTICLE_LIST_H
     typedef struct particle_list {
-        int n;                /* Number of particles    */
+        int size;                /* Number of particles    */
         particle* particles;
     } particle_list;
 

@@ -8,7 +8,7 @@
 #include "smooting-function.h"
 
 #define DECELERATE 5.0
-#define H 150.0
+#define H 201.0
 #define MAX_SPEED 33.33
 #define NR_ITERATIONS 2000
 #define TAU 5.0
@@ -27,31 +27,29 @@ int main() {
 
     for (int loop = 0; loop < NR_ITERATIONS; loop++) {
         // Calculate dRho / dt
-        for (int i = 0; i < particle_list1.n; i++) {
+        for (int i = 0; i < particle_list1.size; i++) {
             double rho = 0;
-            for(int j = 0; j < particle_list1.n; j++) {
+            for(int j = 0; j < particle_list1.size; j++) {
                 if (i == j) {
                     continue;
                 }
                 rho += -(particles[i].velocity - particles[j].velocity) * smoothing_funtion(particles[i], particles[j], H);
-
             }
-            printf("%f \n", rho);
             particles[i].density = particles[i].density + rho*TIME_STEP;
 
         }
 
         // Calculate new x
-        for (int i = 0; i < particle_list1.n; i++) {
+        for (int i = 0; i < particle_list1.size; i++) {
             particles[i].x = particles[i].x + particles[i].velocity * TIME_STEP;
         }
 
         // Calculate wanted velocities
-        particles[9].ve = MAX_SPEED;
+        particles[particle_list1.size - 1].ve = MAX_SPEED;
         if ((int)time % 40 > 20) {
-            particles[9].ve = MAX_SPEED - 30;
+            particles[particle_list1.size - 1].ve = 0;
         }
-        for (int i = particle_list1.n - 2; i >= 0; i--) {
+        for (int i = particle_list1.size - 2; i >= 0; i--) {
             double left_hand_side = (RHO_C*MAX_SPEED) / (RHO_J - RHO_C);
             double right_hand_side = RHO_J/particles[i].density - 1.0;
             particles[i].ve = left_hand_side * right_hand_side;
@@ -62,7 +60,7 @@ int main() {
         }
 
         // Calculate new velocities
-        for (int i = 0; i < particle_list1.n; i++) {
+        for (int i = 0; i < particle_list1.size; i++) {
             const double deltaV = (particles[i].ve - particles[i].velocity);
             if (deltaV < 0) {
                 particles[i].velocity = particles[i].velocity + deltaV / DECELERATE * TIME_STEP;

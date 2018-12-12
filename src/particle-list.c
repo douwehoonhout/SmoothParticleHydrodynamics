@@ -7,15 +7,29 @@
 
 particle_list alloc_particles(int size) {
     particle_list particles;
-    particles.n = size;
+    particles.size = size;
     particles.particles = malloc(size * sizeof(particle));
     return particles;
 }
+int nr_of_lines() {
+    FILE *fp;
+    int lines=0;
+    char ch;
+    fp=fopen("../input/particles","r");
+    while((ch=fgetc(fp))!=EOF)
+    {
+        if (ch=='\n') { lines++; }
+    }
+    fclose(fp);
+    printf("Nr of lines: %d", lines);
+    return lines;
+}
 
 particle_list read_from_file() {
+    int lines = nr_of_lines();
     char buffer[MAXLINE];
     FILE *fp;
-    particle_list particle_list1 = alloc_particles(10);
+    particle_list particle_list1 = alloc_particles(lines);
 
     char file_name[26] = "../input/particles";
     fp = fopen(file_name, "r"); // read mode
@@ -29,7 +43,7 @@ particle_list read_from_file() {
     particle* particles = particle_list1.particles;
 
 
-    for (int i = 0; i < 10;) {
+    for (int i = 0; i < lines;) {
 
 
         if (fgets(buffer, MAXLINE, fp) == NULL) {
@@ -39,7 +53,7 @@ particle_list read_from_file() {
         if (strlen(buffer) > 5) // Kludge solution to skip possibly empty lines !
         {
             sscanf(buffer, "%lf%*[ ,:;]%lf%*[ ,:;]%lf", &particles[i].x, &particles[i].density, &particles[i].velocity);
-            if (i == 9){
+            if (i == lines - 1){
                 particles[i].density = 0;
             }
             else {
@@ -65,7 +79,7 @@ void initial_write(particle_list particle_list1) {
     particle* particles = particle_list1.particles;
     fprintf(f, "id:  x:  vi:  where t = 0\n");
 
-    for (int i = 0; i < particle_list1.n; i++) {
+    for (int i = 0; i < particle_list1.size; i++) {
         fprintf(f, "%d, %lf, %lf \n", i, particles[i].x, particles[i].velocity);
     }
 
@@ -83,7 +97,7 @@ void write_to_file(particle_list particle_list1, double time) {
     particle* particles = particle_list1.particles;
     fprintf(f, "id:  x:  vi:   where t = %lf \n", time);
 
-    for (int i = 0; i < particle_list1.n; i++) {
+    for (int i = 0; i < particle_list1.size; i++) {
         fprintf(f, "%d, %lf, %lf \n", i, particles[i].x, particles[i].velocity);
     }
 
