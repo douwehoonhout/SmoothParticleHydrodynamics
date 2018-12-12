@@ -39,8 +39,15 @@ particle_list read_from_file() {
         if (strlen(buffer) > 5) // Kludge solution to skip possibly empty lines !
         {
             sscanf(buffer, "%lf%*[ ,:;]%lf%*[ ,:;]%lf", &particles[i].x, &particles[i].density, &particles[i].velocity);
+            if (i == 9){
+                particles[i].density = 0;
+            }
+            else {
+                particles[i].density = 1. / (particles[i + 1].x - particles[i].x);
+            }
             i++; // only increase counter if line is valid
         }
+
     }
 
     fclose(fp);

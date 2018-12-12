@@ -26,7 +26,6 @@ for y in ys:
 	plt.xlabel('Time')
 	plt.ylabel('Distance travelled')
 plt.show()	
-plt.pause(1)
 
 plt.subplot(122)
 for y in ys2:
