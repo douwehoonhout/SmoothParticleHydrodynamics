@@ -8,11 +8,11 @@
 #include "smooting-function.h"
 
 #define DECELERATE 5.0
-#define H 300.0
+#define H 201.0
 #define MAX_SPEED 33.33
 #define NR_ITERATIONS 2000
 #define TAU 5.0
-#define TIME_STEP  0.05
+#define TIME_STEP  0.03
 #define RHO_C 0.025
 #define RHO_J 0.125
 
@@ -34,8 +34,9 @@ int main() {
                     continue;
                 }
                 rho += -(particles[i].velocity - particles[j].velocity) * smoothing_funtion(particles[i], particles[j], H);
+
             }
-            //printf("%f \n", rho);
+            printf("%f \n", rho);
             particles[i].density = particles[i].density + rho*TIME_STEP;
 
         }
@@ -48,18 +49,13 @@ int main() {
         // Calculate wanted velocities
         particles[9].ve = MAX_SPEED;
         if ((int)time % 40 > 20) {
-            particles[9].ve = MAX_SPEED - 5;
+            particles[9].ve = MAX_SPEED - 30;
         }
         for (int i = particle_list1.n - 2; i >= 0; i--) {
             double left_hand_side = (RHO_C*MAX_SPEED) / (RHO_J - RHO_C);
             double right_hand_side = RHO_J/particles[i].density - 1.0;
             particles[i].ve = left_hand_side * right_hand_side;
-            if (particles[i].ve < 0) {
-                particles[i].ve = 0;
-            }
-            if (particles[i].ve > MAX_SPEED) {
-                particles[i].ve = MAX_SPEED;
-            }if (particles[i].density < RHO_C) {
+            if (particles[i].density < RHO_C) {
                 particles[i].ve = MAX_SPEED;
             }
 
@@ -73,11 +69,13 @@ int main() {
             } else {
                 particles[i].velocity = particles[i].velocity + deltaV / TAU * TIME_STEP;
             }
+            if (particles[i].velocity < 0) {
+                particles[i].velocity = 0;
+            }
         }
 
         time += TIME_STEP;
         write_to_file(particle_list1, time);
-
 
     }
 

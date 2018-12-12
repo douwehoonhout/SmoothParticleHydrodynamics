@@ -24,8 +24,7 @@ plt.subplot(121)
 for y in ys:
 	plt.plot(x, ys[y], colors[y % len(colors)])
 	plt.xlabel('Time')
-	plt.ylabel('Distance travelled')
-plt.show()	
+	plt.ylabel('Distance travelled')	
 
 plt.subplot(122)
 for y in ys2:
