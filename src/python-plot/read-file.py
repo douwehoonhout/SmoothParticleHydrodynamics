@@ -42,9 +42,9 @@ plt.show()
 fig = plt.figure()
 ax = plt.axes(xlim=(0, 2500), ylim=(-2, 2))
 
-t1 = np.zeros((len(x),10))
-t2 = np.zeros((len(x),10))
-for n in range(0,10):
+t1 = np.zeros((len(x),len(ys)))
+t2 = np.zeros((len(x),len(ys)))
+for n in range(0,len(ys)):
     temp = ys[n]
     temp2 = ys2[n]
     for i in range(0,len(x)):
