@@ -7,7 +7,7 @@ typedef struct particle {
     double density;
     double ve;
     double velocity;
-    double rho;
+    int overtake;
 } particle;
 
 particle* alloc_particle();

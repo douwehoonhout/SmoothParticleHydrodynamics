@@ -6,6 +6,7 @@
 #include <math.h>
 #include "particle-list.h"
 #include "smooting-function.h"
+#include "line-change.h"
 
 #define DECELERATE 5.0
 #define H 201.0
@@ -38,6 +39,8 @@ int main() {
             particles[i].density = particles[i].density + rho*TIME_STEP;
 
         }
+
+        make_line_change_decision(particle_list1, TIME_STEP);
 
         // Calculate new x
         for (int i = 0; i < particle_list1.size; i++) {
