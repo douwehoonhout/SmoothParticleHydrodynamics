@@ -51,7 +51,7 @@ particle_list read_from_file() {
         }
         if (strlen(buffer) > 5) // Kludge solution to skip possibly empty lines !
         {
-            sscanf(buffer, "%lf%*[ ,:;]%lf%*[ ,:;]%lf", &particles[i].x, &particles[i].density, &particles[i].velocity);
+            sscanf(buffer, "%lf%*[ ,:;]%lf%*[ ,:;]%lf%*[ ,:;]%lf", &particles[i].x, &particles[i].y, &particles[i].density, &particles[i].velocity);
             if (i == lines - 1){
                 particles[i].density = 0;
             }
@@ -76,10 +76,10 @@ void initial_write(particle_list particle_list1) {
     }
 
     particle* particles = particle_list1.particles;
-    fprintf(f, "id:  x:  vi:  where t = 0\n");
+    fprintf(f, "id:  x: y:  vi:  where t = 0\n");
 
     for (int i = 0; i < particle_list1.size; i++) {
-        fprintf(f, "%d, %lf, %lf \n", i, particles[i].x, particles[i].velocity);
+        fprintf(f, "%d, %lf, %lf, %lf \n", i, particles[i].x, particles[i].y, particles[i].velocity);
     }
 
     fclose(f);
@@ -94,10 +94,10 @@ void write_to_file(particle_list particle_list1, double time) {
     }
 
     particle* particles = particle_list1.particles;
-    fprintf(f, "id:  x:  vi:   where t = %lf \n", time);
+    fprintf(f, "id:  x:  y:  vi:   where t = %lf \n", time);
 
     for (int i = 0; i < particle_list1.size; i++) {
-        fprintf(f, "%d, %lf, %lf \n", i, particles[i].x, particles[i].velocity);
+        fprintf(f, "%d, %lf, %lf, %lf \n", i, particles[i].x, particles[i].y, particles[i].velocity);
     }
 
     fclose(f);
