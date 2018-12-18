@@ -37,7 +37,7 @@ plt.show()
     
 # First set up the figure, the axis, and the plot element we want to animate
 fig = plt.figure()
-ax = plt.axes(xlim=(0, 1000), ylim=(-2, 2))
+ax = plt.axes(xlim=(0, 2500), ylim=(-2, 2))
 y = np.zeros(10)
 
 t = np.zeros((len(x),10))
@@ -55,6 +55,6 @@ def animate(i):
     point.set_data(x, y)
     return point
 
-animation.FuncAnimation(fig, animate, interval=5, blit = False, repeat = False)
+ani = animation.FuncAnimation(fig, animate, interval=0.05, blit = False, repeat = False)
 
 plt.show()
