@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
+from matplotlib import animation
 import csv
+import numpy as np
 
 colors = ['r', 'g', 'b', 'y']
 x = []
@@ -31,4 +33,28 @@ for y in ys2:
 	plt.plot(x, ys2[y], colors[y % len(colors)])
 	plt.xlabel('Time')
 	plt.ylabel('Speed')
+plt.show()
+    
+# First set up the figure, the axis, and the plot element we want to animate
+fig = plt.figure()
+ax = plt.axes(xlim=(0, 1000), ylim=(-2, 2))
+y = np.zeros(10)
+
+t = np.zeros((len(x),10))
+for n in range(0,10):
+    temp = ys[n]
+    for i in range(0,len(x)):
+        t[i][n] = temp[i]
+print(t[0])
+point, = ax.plot(t[0],y,'o')
+
+# animation function.  This is called sequentially
+def animate(i):
+    x = t[i]
+    y = np.zeros(10)
+    point.set_data(x, y)
+    return point
+
+animation.FuncAnimation(fig, animate, interval=5, blit = False, repeat = False)
+
 plt.show()
