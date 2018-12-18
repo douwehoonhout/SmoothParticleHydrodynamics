@@ -3,6 +3,7 @@
 
 typedef struct particle {
     double x;
+    double y;
     double density;
     double ve;
     double velocity;
