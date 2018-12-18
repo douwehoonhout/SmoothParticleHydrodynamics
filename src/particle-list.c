@@ -21,7 +21,6 @@ int nr_of_lines() {
         if (ch=='\n') { lines++; }
     }
     fclose(fp);
-    printf("Nr of lines: %d", lines);
     return lines;
 }
 
