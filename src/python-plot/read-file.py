@@ -61,6 +61,6 @@ def animate(i):
     point.set_data(x, y)
     return point
 
-ani = animation.FuncAnimation(fig, animate, interval=0.05, blit = False, repeat = False)
+ani = animation.FuncAnimation(fig, animate, interval=0.5, blit = False, repeat = False)
 
 plt.show()
