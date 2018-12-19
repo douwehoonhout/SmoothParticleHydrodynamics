@@ -5,8 +5,9 @@
 #include "particle.h"
 #include <math.h>
 #include "particle-list.h"
-#include "smooting-function.h"
+#include "smoothing-function.h"
 #include "line-change.h"
+#include "smoothing-function.h"
 
 #define DECELERATE 5.0
 #define H 201.0
@@ -36,7 +37,7 @@ int main() {
                 }
                 if (particles[i].y == particles[i].y) {
                     rho += -(particles[i].velocity - particles[j].velocity) *
-                           smoothing_funtion(particles[i], particles[j], H);
+                            smoothing_funtion(particles[i], particles[j], H);
                 }
             }
             particles[i].density = particles[i].density + rho*TIME_STEP;
@@ -52,25 +53,25 @@ int main() {
 
         //particles[particle_list1.size - 1].ve = MAX_SPEED;
         // Starting particles max_speed
-        int temp;
-        for (int i =0; i <particle_list1.size; i++){
-            for (int j =0; j <particle_list1.size; j++){
-                if (particles[i].x >= particles[j].x){
-                    temp = 1;
-                }
-                else{
-                    temp = 0;
-                }
-            }
-            if (temp == 1){
-                particles[i].ve = MAX_SPEED;
-            }
-        }
+//        int temp;
+//        for (int i =0; i <particle_list1.size; i++){
+//            for (int j =0; j <particle_list1.size; j++){
+//                if (particles[i].y == particles[i].y && particles[i].x >= particles[j].x){
+//                    continue;
+//                }
+//                else{
+//                    temp = 0;
+//                }
+//            }
+//            if (temp != 1){
+//                particles[i].ve = MAX_SPEED;
+//            }
+//        }
         // Calculate wanted velocities
 //        if ((int)time % 40 > 20) {
 //            particles[particle_list1.size - 1].ve = 20;
 //        }
-        for (int i = particle_list1.size - 2; i >= 0; i--) {
+        for (int i = particle_list1.size-1; i >= 0; i--) {
             double left_hand_side = (RHO_C*MAX_SPEED) / (RHO_J - RHO_C);
             double right_hand_side = RHO_J/particles[i].density - 1.0;
             particles[i].ve = left_hand_side * right_hand_side;
