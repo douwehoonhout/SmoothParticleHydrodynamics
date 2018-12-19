@@ -8,8 +8,8 @@
 #include "line-change.h"
 #include "smoothing-function.h"
 
-#define DECELERATE 5.0
-#define H 201.0
+#define DECELERATE 2.0
+#define H 60
 #define MAX_SPEED 33.33
 #define NR_ITERATIONS 2000
 #define TAU 5.0
@@ -34,6 +34,17 @@ void calc_density(particle* particles, int size) {
     }
 }
 
+void calc_density2(particle* particles, int size) {
+    for (int i = 0; i < size; i++){
+        double rho = 0;
+        for (int j = 0; j < size; j++) {
+            if (particles[i].y == particles[j].y) {
+                rho += smoothing_funtion2(particles[i], particles[j], H);
+            }
+        }
+        particles[i].density = rho;
+    }
+}
 
 void calc_x(particle* particles, int size){
     for (int i = 0; i < size; i++) {
@@ -41,28 +52,25 @@ void calc_x(particle* particles, int size){
     }
 }
 
-void calc_v(particle* particles, int size){
+void calc_v(particle* particles, int size, int time){
 
 // For adjusting the speed of the front car
-/*
-        int temp;
+
+        int temp = 0;
         for (int i =0; i <size; i++){
             for (int j =0; j <size; j++){
                 if (particles[i].y == particles[i].y && particles[i].x >= particles[j].x){
                     continue;
                 }
                 else{
-                    temp = 0;
+                    temp = 1;
                 }
             }
             if (temp != 1){
-                particles[i].ve = MAX_SPEED;
-                if ((int)time % 40 > 20) {
-                    particles[size - 1].ve = 20;
-                    }
+
             }
         }
-*/
+
 
 
     for (int i = size-1; i >= 0; i--) {
@@ -73,6 +81,11 @@ void calc_v(particle* particles, int size){
             particles[i].ve = MAX_SPEED;
         }
 
+    }
+
+    particles[size - 1].ve = MAX_SPEED;
+    if (time % 40 > 20) {
+        particles[size - 1].ve = MAX_SPEED - 5;
     }
 
     // Calculate new velocities
@@ -104,9 +117,9 @@ int main() {
 
     for (int loop = 0; loop < NR_ITERATIONS; loop++) {
 
-        calc_density(particles, particle_list1.size);
+        calc_density2(particles, particle_list1.size);
         calc_x(particles, particle_list1.size);
-        calc_v(particles, particle_list1.size);
+        calc_v(particles, particle_list1.size, (int) time);
 
         time += TIME_STEP;
         write_to_file(particle_list1, time);
