@@ -97,7 +97,7 @@ void write_to_file(particle_list particle_list1, double time) {
     fprintf(f, "id:  x:  y:  vi:   where t = %lf \n", time);
 
     for (int i = 0; i < particle_list1.size; i++) {
-        fprintf(f, "%d, %lf, %lf, %lf \n", i, particles[i].x, particles[i].y, particles[i].velocity);
+        fprintf(f, "%d, %lf, %lf, %lf, %lf \n", i, particles[i].x, particles[i].y, particles[i].velocity, particles[i].density);
     }
 
     fclose(f);
