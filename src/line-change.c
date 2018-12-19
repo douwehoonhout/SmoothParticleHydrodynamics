@@ -24,11 +24,12 @@ void make_line_change_decision(particle_list particle_list, double time_step) {
 
 
         for (int j = 0; j < particle_list.size; j++) {
-            if (i == j || fabs(particles[i].y - particles[j].y) > 3.7) {
+            if (i == j || fabs(particles[i].y - particles[j].y) > 1.9) {
                 continue;
             }
-            if (particles[j].ve < particles[i].ve && particles[j].x - particles[i].x < 200) {
-                particles[i].y = particles[i].y + time_step;
+            double distance = particles[j].x - particles[i].x;
+            if (particles[j].ve < particles[i].ve && distance < 50 && distance > 0) {
+                particles[i].overtake = 1;
             }
         }
     }
