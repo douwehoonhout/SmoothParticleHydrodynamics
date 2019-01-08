@@ -16,6 +16,7 @@
 #define RHO_C 0.025
 #define RHO_J 0.125
 
+// WORKS FOR 1D
 void calc_density(particle* particles, int size) {
     for (int i = 0; i < size; i++) {
         double rho = 0;
