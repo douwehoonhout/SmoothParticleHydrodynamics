@@ -15,6 +15,7 @@
 #define TIME_STEP  0.5
 #define RHO_C 0.025
 #define RHO_J 0.125
+#define ROADLENGTH 2000.0
 
 // WORKS FOR 1D
 void calc_density(particle* particles, int size) {
@@ -24,7 +25,7 @@ void calc_density(particle* particles, int size) {
             if (i == j) {
                 continue;
             }
-            rho += -(particles[i].velocity - particles[j].velocity) * smoothing_function(particles[i], particles[j], H);
+            rho += -(particles[i].velocity - particles[j].velocity) * smoothing_function(particles[i], particles[j], H, ROADLENGTH);
         }
         if (particles[i].density < 0) {
             printf("Rho: %lf Density: %lf \n", rho, particles[i].density);
@@ -35,9 +36,13 @@ void calc_density(particle* particles, int size) {
 }
 
 
-void calc_x(particle* particles, int size){
+void calc_x(particle* particles, int size) {
     for (int i = 0; i < size; i++) {
         particles[i].x = particles[i].x + particles[i].velocity * TIME_STEP;
+
+        if (particles[i].x > ROADLENGTH) {
+            particles[i].x -= ROADLENGTH;
+        }
     }
 }
 
