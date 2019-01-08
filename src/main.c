@@ -10,9 +10,9 @@
 #define DECELERATE 5.0
 #define H 201.0
 #define MAX_SPEED 33.33
-#define NR_ITERATIONS 2000
+#define NR_ITERATIONS 100
 #define TAU 5.0
-#define TIME_STEP  0.05
+#define TIME_STEP  0.5
 #define RHO_C 0.025
 #define RHO_J 0.125
 
@@ -46,9 +46,11 @@ int main() {
 
         // Calculate wanted velocities
         particles[particle_list1.size - 1].ve = MAX_SPEED;
+        /*
         if ((int)time % 40 > 20) {
             particles[particle_list1.size - 1].ve = 0;
         }
+         */
         for (int i = particle_list1.size - 2; i >= 0; i--) {
             double left_hand_side = (RHO_C*MAX_SPEED) / (RHO_J - RHO_C);
             double right_hand_side = RHO_J/particles[i].density - 1.0;
