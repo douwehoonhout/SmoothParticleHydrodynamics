@@ -3,6 +3,6 @@
 
 #include "particle.h"
 
-double smoothing_funtion(particle particle1, particle particle2, int h);
+double smoothing_function(particle particle1, particle particle2, int h);
 
 #endif //SMOOTHPARTICLEHYDRODYNAMICS_SMOOTING_FUNCTION_H
