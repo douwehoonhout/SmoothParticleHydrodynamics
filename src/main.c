@@ -24,8 +24,8 @@ void lane_change(particle* particles, int size, int i) {
             continue;
         }
 
-        // Only check if it is safe with cars on the left lane
-        if (particles[j].y == 0) {
+        // Only check if it is safe with cars that are not in the same lane
+        if (particles[j].y == particles[i].y) {
             continue;
         }
 
@@ -37,23 +37,36 @@ void lane_change(particle* particles, int size, int i) {
 
     }
     if (safeToOvertake == 1) {
-        particles[i].overtake = 1;
+        if (particles[i].y == 3.7) {
+            particles[i].overtake = -1;
+        } else {
+            particles[i].overtake = 1;
+        }
     }
 }
 
 void calc_density(particle* particles, int size) {
     for (int i = 0; i < size; i++) {
         double rho = 0, rho2 = 0;
-        particle temp = particles[i];
-        temp.y = 3.7;
+        particle temp = *alloc_particle();
+        temp.x = particles[i].x;
+        if (particles[i].overtake == 0 && particles[i].y == 3.7) {
+            temp.y = 0;
+        } else if (particles[i].overtake == 0 && particles[i].y == 0) {
+            temp.y = 3.7;
+        }
+        if (particles[i].overtake != 0) {
+            temp.y = particles[i].y;
+        }
 
         for(int j  = 0; j < size; j++) {
             if (i == j) {
                 continue;
             }
             rho += -(particles[i].velocity - particles[j].velocity) * smoothing_function(particles[i], particles[j], H);
-            if (particles[i].y < 3.7 && particles[i].overtake != 0) {
+            if (particles[i].overtake == 0) {
                 rho2 += -(temp.velocity - particles[j].velocity) * smoothing_function(temp, particles[j], H);
+                printf("y1: %lf y2: %lf \n", particles[i].y, temp.y);
             }
         }
 
@@ -90,6 +103,15 @@ void calc_y(particle* particles, int size) {
 
         if (particles[i].overtake == 1) {
             particles[i].y += 0.1 * TIME_STEP;
+        }
+
+        if (particles[i].overtake == -1) {
+            particles[i].y -= 0.1 * TIME_STEP;
+        }
+
+        if (particles[i].y < 0) {
+            particles[i].y = 0;
+            particles[i].overtake = 0;
         }
 
         if (particles[i].y >= 3.7) {
