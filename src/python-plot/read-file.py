@@ -63,4 +63,6 @@ def animate(i):
 
 ani = animation.FuncAnimation(fig, animate, interval=1, blit = False, repeat = False)
 
+#ani.save('Test.mp4',writer='ffmpeg')
+
 plt.show()

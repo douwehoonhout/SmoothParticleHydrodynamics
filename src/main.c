@@ -25,9 +25,11 @@ void calc_density(particle* particles, int size) {
             }
             rho += -(particles[i].velocity - particles[j].velocity) * smoothing_function(particles[i], particles[j], H);
         }
+        /*
         if (particles[i].density < 0) {
             printf("Rho: %lf Density: %lf \n", rho, particles[i].density);
         }
+         */
         particles[i].density = particles[i].density + rho*TIME_STEP;
 
     }
