@@ -27,16 +27,25 @@ with open('../../output/result.txt','r') as csvfile:
 			index = row[0].index('t')
 			x.append(float(row[0][index + 4:]))
 
+plt.subplot(121)
+for y in ys:
+	plt.plot(x, ys[y])
+	plt.xlabel('Time')
+	plt.ylabel('Distance travelled')	
+
+plt.subplot(122)
 
 for y in ys3:
 	plt.plot(x, ys3[y])
 	plt.xlabel('Time')
 	plt.ylabel('Speed')
 plt.show()
+
+
     
 # First set up the figure, the axis, and the plot element we want to animate
 fig = plt.figure()
-ax = plt.axes(xlim=(0, 10000), ylim=(-2, 2))
+ax = plt.axes(xlim=(0, 100), ylim=(-2, 2))
 
 t1 = np.zeros((len(x),len(ys)))
 t2 = np.zeros((len(x),len(ys)))
