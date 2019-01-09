@@ -8,19 +8,23 @@
 #include "smoothing-function.h"
 
 #define DECELERATE 8.0
-#define H 300.0
+#define H 150.0
 #define MAX_SPEED 33.33
 #define NR_ITERATIONS 2000
 #define TAU 5.0
 #define TIME_STEP  0.5
 #define RHO_C 0.025
 #define RHO_J 0.125
+#define ROADLENGTH 2000
 
 void calc_density(particle* particles, int size) {
     for (int i = 0; i < size; i++) {
         double rho = 0;
-        for(int j = 0; j < size; j++) {
+        for(int j  = 0; j < size; j++) {
             if (i == j) {
+                continue;
+            }
+            if (particles[i].y == particles[j].y){
                 continue;
             }
             rho += -(particles[i].velocity - particles[j].velocity) * smoothing_function(particles[i], particles[j], H);
@@ -39,6 +43,18 @@ void calc_density(particle* particles, int size) {
 void calc_x(particle* particles, int size){
     for (int i = 0; i < size; i++) {
         particles[i].x = particles[i].x + particles[i].velocity * TIME_STEP;
+
+        //Creates the roundabout structure
+        /*
+        if (particles[i].x > ROADLENGTH) {
+            particles[i].x -= ROADLENGTH;
+        }
+        */
+
+        //Checking if the car in front is not to close to cause a collision
+        if (abs(particles[i].x - particles[i + 1].x) <= 0.5) {
+            exit(0);
+        }
     }
 }
 
@@ -91,6 +107,31 @@ void calc_v(particle* particles, int size, int time){
         }
         if (particles[i].velocity < 0) {
             particles[i].velocity = 0;
+        }
+    }
+}
+
+void lane_change(particle* particles, int size){
+
+    for (int i = 0; i < size; i++){
+
+        //Checking if the car is in the left lane.
+        if (particles[i].y == 3.7){
+            continue;
+        }
+
+        //Checking condition if the car in lane 2 is moving at maximum speed.
+        if (particles[i].velocity != MAX_SPEED){
+            continue;
+        }
+
+        //Checking if the density of the adjacent lane is lower then its own density.
+        for (int j = 0; j < size; j++){
+
+            if (particles[j].y == 0){
+
+            }
+
         }
     }
 }
