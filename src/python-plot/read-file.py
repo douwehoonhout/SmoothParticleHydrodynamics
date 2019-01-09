@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 from matplotlib import animation
 import csv
 import numpy as np
@@ -8,6 +9,7 @@ x = []
 ys = dict()
 ys2 = dict()
 ys3 = dict()
+mpl.style.use('default')
 
 with open('../../output/result.txt','r') as csvfile:
 	plots = csv.reader(csvfile, delimiter=',')
@@ -25,15 +27,9 @@ with open('../../output/result.txt','r') as csvfile:
 			index = row[0].index('t')
 			x.append(float(row[0][index + 4:]))
 
-plt.subplot(121)
-for y in ys:
-	plt.plot(x, ys[y], colors[y % len(colors)])
-	plt.xlabel('Time')
-	plt.ylabel('Distance travelled')	
 
-plt.subplot(122)
 for y in ys3:
-	plt.plot(x, ys3[y], colors[y % len(colors)])
+	plt.plot(x, ys3[y])
 	plt.xlabel('Time')
 	plt.ylabel('Speed')
 plt.show()
