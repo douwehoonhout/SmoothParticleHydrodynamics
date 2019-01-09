@@ -3,7 +3,7 @@
 #include "particle.h"
 
 double smoothing_function(particle particle1, particle particle2, int h) {
-    if (fabs(particle1.y - particle2.y) > 1.85) {
+    if (fabs(particle1.y - particle2.y) > 0.5) {
         return 0;
     }
 

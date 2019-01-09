@@ -17,24 +17,51 @@
 #define RHO_J 0.125
 #define ROADLENGTH 2000
 
+void lane_change(particle* particles, int size, int i) {
+    int safeToOvertake = 1;
+    for(int j  = 0; j < size; j++) {
+        if (i == j) {
+            continue;
+        }
+
+        // Only check if it is safe with cars on the left lane
+        if (particles[j].y == 0) {
+            continue;
+        }
+
+        // Check whether there is enough distance to make the lane change
+        if (fabs(particles[i].x - particles[j].x) < 100) {
+            safeToOvertake = 0;
+            break;
+        }
+
+    }
+    if (safeToOvertake == 1) {
+        particles[i].overtake = 1;
+    }
+}
+
 void calc_density(particle* particles, int size) {
     for (int i = 0; i < size; i++) {
-        double rho = 0;
+        double rho = 0, rho2 = 0;
+        particle temp = particles[i];
+        temp.y = 3.7;
+
         for(int j  = 0; j < size; j++) {
             if (i == j) {
                 continue;
             }
-            if (particles[i].y == particles[j].y){
-                continue;
-            }
             rho += -(particles[i].velocity - particles[j].velocity) * smoothing_function(particles[i], particles[j], H);
+            if (particles[i].y < 3.7 && particles[i].overtake != 0) {
+                rho2 += -(temp.velocity - particles[j].velocity) * smoothing_function(temp, particles[j], H);
+            }
         }
-        /*
-        if (particles[i].density < 0) {
-            printf("Rho: %lf Density: %lf \n", rho, particles[i].density);
+
+        // If density on the adjacent lane is lower than the current lane, then switch lanes.
+        if (rho2 < 0 && rho2 < rho) {
+            lane_change(particles, size, i);
         }
-         */
-        particles[i].density = particles[i].density + rho*TIME_STEP;
+        particles[i].density = particles[i].density + rho * TIME_STEP;
 
     }
 }
@@ -51,9 +78,23 @@ void calc_x(particle* particles, int size){
         }
         */
 
-        //Checking if the car in front is not to close to cause a collision
-        if (abs(particles[i].x - particles[i + 1].x) <= 0.5) {
-            exit(0);
+    }
+}
+
+void calc_y(particle* particles, int size) {
+    for (int i = 0; i < size; i++) {
+
+        if (particles[i].overtake == 0) {
+            continue;
+        }
+
+        if (particles[i].overtake == 1) {
+            particles[i].y += 0.1 * TIME_STEP;
+        }
+
+        if (particles[i].y >= 3.7) {
+            particles[i].y = 3.7;
+            particles[i].overtake = 0;
         }
     }
 }
@@ -84,10 +125,9 @@ void calc_v(particle* particles, int size, int time){
         particles[i].ve = left_hand_side * right_hand_side;
         if (particles[i].ve < 0) {
             particles[i].ve = 0;
-        }
-        if (particles[i].ve > MAX_SPEED) {
+        } if (particles[i].ve > MAX_SPEED) {
             particles[i].ve = MAX_SPEED;
-        }if (particles[i].density < RHO_C) {
+        } if (particles[i].density < RHO_C) {
             particles[i].ve = MAX_SPEED;
         }
     }
@@ -111,32 +151,6 @@ void calc_v(particle* particles, int size, int time){
     }
 }
 
-void lane_change(particle* particles, int size){
-
-    for (int i = 0; i < size; i++){
-
-        //Checking if the car is in the left lane.
-        if (particles[i].y == 3.7){
-            continue;
-        }
-
-        //Checking condition if the car in lane 2 is moving at maximum speed.
-        if (particles[i].velocity != MAX_SPEED){
-            continue;
-        }
-
-        //Checking if the density of the adjacent lane is lower then its own density.
-        for (int j = 0; j < size; j++){
-
-            if (particles[j].y == 0){
-
-            }
-
-        }
-    }
-}
-
-
 int main() {
 
     double time = 0;
@@ -150,6 +164,7 @@ int main() {
 
         calc_density(particles, particle_list1.size);
         calc_x(particles, particle_list1.size);
+        calc_y(particles, particle_list1.size);
         calc_v(particles, particle_list1.size, (int) time);
 
         time += TIME_STEP;
