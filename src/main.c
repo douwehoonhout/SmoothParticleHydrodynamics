@@ -8,14 +8,16 @@
 #include "smoothing-function.h"
 
 #define DECELERATE 8.0
-#define H 300.0
+#define H 100.0
 #define MAX_SPEED 33.33
 #define NR_ITERATIONS 2000
-#define TAU 5.0
-#define TIME_STEP  0.5
+#define TAU 6.0
+#define TIME_STEP  1
 #define RHO_C 0.025
 #define RHO_J 0.125
-#define ROADLENGTH 2000.0
+#define ROADLENGTH 1000.0
+
+#define MAX(X, Y) (((X) < (Y)) ? (Y) : (X))
 
 // WORKS FOR 1D
 void calc_density(particle* particles, int size) {
@@ -81,7 +83,7 @@ void calc_v(particle* particles, int size, int time){
     }
 
     if (time % 200 > 100) {
-        particles[size - 1].ve = 15;
+        particles[size - 1].ve = 10;
     }
 
     // Calculate new velocities
