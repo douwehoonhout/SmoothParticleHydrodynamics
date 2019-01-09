@@ -1,7 +1,7 @@
 #include <math.h>
 #include <stdio.h>
 #include "particle.h"
-
+/*
 double calculateDistance(double position1, double position2, double roadLength) {
     double distance1, distance2;
     distance1 = fabs(position1 - position2);
@@ -18,11 +18,12 @@ double calculateDistance(double position1, double position2, double roadLength) 
 
     return distance2;
 }
+ */
 
 // Provide roadlength for cars that drive in a circle
 double smoothing_function(particle particle1, particle particle2, int h, double roadLength) {
-    double distance = calculateDistance(particle1.x, particle2.x, roadLength);
-    double r = distance / (double) h;
+    //double distance = calculateDistance(particle1.x, particle2.x, roadLength);
+    double r = fabs(particle1.x - particle2.x) / (double) h;
 
     if (r >= 2) {
         return 0;
