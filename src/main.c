@@ -78,7 +78,7 @@ void calc_v(particle* particles, int size, int time){
 
     particles[size - 1].ve = MAX_SPEED;
     if (time % 200 > 100) {
-        particles[size - 1].ve = 0;
+        particles[size - 1].ve = 15;
     }
 
     // Calculate new velocities
