@@ -64,6 +64,7 @@ particle_list read_from_file() {
         else {
             particles[i].density = 1. / (particles[i + 1].x - particles[i].x);
         }
+        particles[i].vy = 0;
     }
 
     fclose(fp);

@@ -16,6 +16,8 @@
 #define RHO_C 0.025
 #define RHO_J 0.125
 #define ROADLENGTH 2000
+#define LANEWIDTH 3.7
+#define LANECHANGETIME 5
 
 void lane_change(particle* particles, int size, int i) {
     int safeToOvertake = 1;
@@ -45,7 +47,13 @@ void calc_density(particle* particles, int size) {
     for (int i = 0; i < size; i++) {
         double rho = 0, rho2 = 0;
         particle temp = particles[i];
-        temp.y = 3.7;
+        if (temp.y == 0){
+            temp.y = 3.7;
+        }
+        else if(temp.y == 3.7){
+            temp.y = 0;
+        }
+
 
         for(int j  = 0; j < size; j++) {
             if (i == j) {
@@ -89,7 +97,7 @@ void calc_y(particle* particles, int size) {
         }
 
         if (particles[i].overtake == 1) {
-            particles[i].y += 0.1 * TIME_STEP;
+            particles[i].y += particles[i].vy * TIME_STEP;
         }
 
         if (particles[i].y >= 3.7) {
@@ -151,6 +159,19 @@ void calc_v(particle* particles, int size, int time){
     }
 }
 
+void calc_vy(particle* particles, int size){
+    double acceleration = 4 * LANEWIDTH / pow(LANECHANGETIME, 2);
+    for (int i = 0; i < size; i++){
+        if (particles[i].overtake == 1){
+            if (particles[i].y < LANEWIDTH / 2){
+                particles[i].vy += acceleration * TIME_STEP;
+            }
+            else {
+                particles[i].vy -= acceleration * TIME_STEP;
+            }
+        }
+    }
+}
 int main() {
 
     double time = 0;
@@ -166,6 +187,7 @@ int main() {
         calc_x(particles, particle_list1.size);
         calc_y(particles, particle_list1.size);
         calc_v(particles, particle_list1.size, (int) time);
+        calc_vy(particles, particle_list1.size);
 
         time += TIME_STEP;
         write_to_file(particle_list1, time);

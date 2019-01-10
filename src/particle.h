@@ -7,6 +7,7 @@ typedef struct particle {
     double density;
     double ve;
     double velocity;
+    double vy;
     int overtake; // Use 1 for overtaking, 0 for not changing lane and -1 for switching back one lane.
 } particle;
 
