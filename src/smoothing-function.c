@@ -8,7 +8,8 @@ double calculateDistance(double position1, double position2, double roadLength) 
 
     if (position1 < position2) {
         distance2 = position1 + roadLength - position2;
-    } else {
+    }
+    else {
         distance2 = position2 + roadLength - position1;
     }
 
@@ -22,8 +23,8 @@ double calculateDistance(double position1, double position2, double roadLength) 
 
 // Provide roadlength for cars that drive in a circle
 double smoothing_function(particle particle1, particle particle2, int h, double roadLength) {
-    //double distance = calculateDistance(particle1.x, particle2.x, roadLength);
-    double r = fabs(particle1.x - particle2.x) / (double) h;
+    double distance = calculateDistance(particle1.x, particle2.x, roadLength);
+    double r = distance / (double) h;
 
     if (r >= 2) {
         return 0;

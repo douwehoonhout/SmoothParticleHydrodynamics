@@ -8,14 +8,14 @@
 #include "smoothing-function.h"
 
 #define DECELERATE 8.0
-#define H 20.0
+#define H 100.0
 #define MAX_SPEED 33.33
 #define NR_ITERATIONS 2000
 #define TAU 6.0
-#define TIME_STEP  0.01
+#define TIME_STEP  0.1
 #define RHO_C 0.025
 #define RHO_J 0.125
-#define ROADLENGTH 100.0
+#define ROADLENGTH 1000.0
 
 #define MAX(X, Y) (((X) < (Y)) ? (Y) : (X))
 
@@ -49,9 +49,10 @@ void calc_x(particle* particles, int size) {
 
 
         //Checking if the car in front is not to close to cause a collision
-        if (abs(particles[i].x - particles[i + 1].x) <= 0.5) {
-            exit(0);
-        }
+//        if (fabs(particles[i].x - particles[i + 1].x) <= 0.5) {
+//            printf("ERROR: CRASH OCCURRED\n");
+//            exit(0);
+//        }
     }
 }
 
@@ -84,13 +85,14 @@ void calc_v(particle* particles, int size, int time){
         }
         if (particles[i].ve > MAX_SPEED) {
             particles[i].ve = MAX_SPEED;
-        }if (particles[i].density < RHO_C) {
+        }
+        if (particles[i].density < RHO_C) {
             particles[i].ve = MAX_SPEED;
         }
     }
 
 //    if (time % 100 > 50) {
-//        particles[size - 1].ve = 0;
+//        particles[size - 1].ve = 20;
 //    }
 
     // Calculate new velocities
