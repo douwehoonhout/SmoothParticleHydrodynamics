@@ -8,7 +8,7 @@
 #include "smoothing-function.h"
 
 #define DECELERATE 8.0
-#define H 150.0
+#define H 100.0
 #define MAX_SPEED 33.33
 #define NR_ITERATIONS 2000
 #define TAU 5.0
@@ -26,8 +26,8 @@ void lane_change(particle* particles, int size, int i) {
             continue;
         }
 
-        // Only check if it is safe with cars on the left lane
-        if (particles[j].y == 0) {
+        // Only check if it is safe with cars on the other lane
+        if (particles[j].y == particles[i].y) {
             continue;
         }
 
@@ -45,31 +45,34 @@ void lane_change(particle* particles, int size, int i) {
 
 void calc_density(particle* particles, int size) {
     for (int i = 0; i < size; i++) {
-        double rho = 0, rho2 = 0;
-        particle temp = particles[i];
-        if (temp.y == 0){
-            temp.y = 3.7;
+        double rho = 0;
+        particle temp;
+        temp.x = particles[i].x;
+        temp.density = 0;
+        if (particles[i].y == 0){
+            temp.y = LANEWIDTH;
         }
-        else if(temp.y == 3.7){
+        else if(particles[i].y == LANEWIDTH){
             temp.y = 0;
+        }
+        else {
+            temp.y = LANEWIDTH / 2;
         }
 
 
         for(int j  = 0; j < size; j++) {
-            if (i == j) {
-                continue;
-            }
             rho += -(particles[i].velocity - particles[j].velocity) * smoothing_function(particles[i], particles[j], H);
-            if (particles[i].y < 3.7 && particles[i].overtake != 0) {
-                rho2 += -(temp.velocity - particles[j].velocity) * smoothing_function(temp, particles[j], H);
-            }
+            temp.density += smoothing_function2(temp, particles[j], H);
         }
 
+        particles[i].density = particles[i].density + rho * TIME_STEP;
+        if (particles[i].density < 0){
+            particles[i].density = 0;
+        }
         // If density on the adjacent lane is lower than the current lane, then switch lanes.
-        if (rho2 < 0 && rho2 < rho) {
+        if (temp.density < particles[i].density && particles[i].velocity < .9 * MAX_SPEED) {
             lane_change(particles, size, i);
         }
-        particles[i].density = particles[i].density + rho * TIME_STEP;
 
     }
 }
@@ -100,10 +103,25 @@ void calc_y(particle* particles, int size) {
             particles[i].y += particles[i].vy * TIME_STEP;
         }
 
-        if (particles[i].y >= 3.7) {
+        if (particles[i].y > 3.7) {
             particles[i].y = 3.7;
             particles[i].overtake = 0;
+            particles[i].density = 0;
+            for (int j = 0; j < size; j++){
+                particles[i].density += smoothing_function2(particles[i], particles[j],H);
+            }
+
         }
+
+        if (particles[i].y < 0) {
+            particles[i].y = 0;
+            particles[i].overtake = 0;
+            particles[i].density = 0;
+            for (int j = 0; j < size; j++){
+                particles[i].density += smoothing_function2(particles[i], particles[j],H);
+            }
+        }
+
     }
 }
 
@@ -140,10 +158,11 @@ void calc_v(particle* particles, int size, int time){
         }
     }
 
-    particles[size - 1].ve = MAX_SPEED;
-    if (time % 200 > 100) {
-        particles[size - 1].ve = 15;
-    }
+    particles[size/2 - 1].ve = 10;
+
+//    if (time % 200 > 100) {
+//        particles[size - 1].ve = 20;
+//    }
 
     // Calculate new velocities
     for (int i = 0; i < size; i++) {
