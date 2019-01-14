@@ -65,6 +65,9 @@ void calc_density(particle* particles, int size) {
             temp.density += smoothing_function2(temp, particles[j], H);
         }
 
+        if (temp.y == 0 && temp.density < RHO_C){
+            lane_change(particles, size, i);
+        }
         particles[i].density = particles[i].density + rho * TIME_STEP;
         if (particles[i].density < 0){
             particles[i].density = 0;
@@ -158,7 +161,7 @@ void calc_v(particle* particles, int size, int time){
         }
     }
 
-    particles[size/2 - 1].ve = 10;
+    particles[size/2 - 1].ve = 25;
 
 //    if (time % 200 > 100) {
 //        particles[size - 1].ve = 20;
