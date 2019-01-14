@@ -3,19 +3,20 @@
 #include <omp.h>
 #include "particle.h"
 #include <math.h>
+#include <time.h>
 #include "particle-list.h"
 #include "line-change.h"
 #include "smoothing-function.h"
 
 #define DECELERATE 8.0
-#define H 150.0
+#define H 200.0
 #define MAX_SPEED 33.33
-#define NR_ITERATIONS 2000
+#define NR_ITERATIONS 20
 #define TAU 5.0
 #define TIME_STEP  0.5
 #define RHO_C 0.025
 #define RHO_J 0.125
-#define ROADLENGTH 2000
+#define ROADLENGTH 20000
 
 void lane_change(particle* particles, int size, int i) {
     int safeToOvertake = 1;
@@ -30,7 +31,7 @@ void lane_change(particle* particles, int size, int i) {
         }
 
         // Check whether there is enough distance to make the lane change
-        if (fabs(particles[i].x - particles[j].x) < 100) {
+        if (fabs(particles[i].x - particles[j].x) < 200) {
             safeToOvertake = 0;
             break;
         }
@@ -66,7 +67,6 @@ void calc_density(particle* particles, int size) {
             rho += -(particles[i].velocity - particles[j].velocity) * smoothing_function(particles[i], particles[j], H);
             if (particles[i].overtake == 0) {
                 rho2 += -(temp.velocity - particles[j].velocity) * smoothing_function(temp, particles[j], H);
-                printf("y1: %lf y2: %lf \n", particles[i].y, temp.y);
             }
         }
 
@@ -99,6 +99,24 @@ void calc_y(particle* particles, int size) {
 
         if (particles[i].overtake == 0) {
             continue;
+        }
+        double minDistance = 99999;
+
+        for (int j = 0; j < size - 1; j++) {
+            if (i == j) {
+                continue;
+            }
+
+            double distance = particles[j].x - particles[i].x;
+
+            if (distance > 0 && distance < minDistance) {
+                minDistance = distance;
+            }
+        }
+
+        if (minDistance > 400 && particles[i].y == 0) {
+            particles[i].overtake = 0;
+            return;
         }
 
         if (particles[i].overtake == 1) {
@@ -152,11 +170,16 @@ void calc_v(particle* particles, int size, int time){
         } if (particles[i].density < RHO_C) {
             particles[i].ve = MAX_SPEED;
         }
+
+        if (particles[i].overtake != 0) {
+            particles[i].ve = MAX_SPEED;
+        }
     }
 
+
     particles[size - 1].ve = MAX_SPEED;
-    if (time % 200 > 100) {
-        particles[size - 1].ve = 15;
+    if (particles[size - 1].overtake == 0 && time % 200 > 100) {
+        particles[size - 1].ve = 25;
     }
 
     // Calculate new velocities
@@ -170,6 +193,24 @@ void calc_v(particle* particles, int size, int time){
         if (particles[i].velocity < 0) {
             particles[i].velocity = 0;
         }
+
+        double minDistance = 99999;
+
+        for (int j = 0; j < size - 1; j++) {
+            if (i == j) {
+                continue;
+            }
+
+            double distance = particles[j].x - particles[i].x;
+
+            if (distance > 0 && distance < minDistance) {
+                minDistance = distance;
+            }
+        }
+
+        if (i != size - 1 && minDistance > H * 2) {
+            particles[i].velocity = MAX_SPEED;
+        }
     }
 }
 
@@ -177,7 +218,8 @@ int main() {
 
     double time = 0;
 
-    omp_set_num_threads(4);
+    clock_t begin = clock();
+
     particle_list particle_list1 = read_from_file();
     particle* particles = particle_list1.particles;
     initial_write(particle_list1);
@@ -193,6 +235,10 @@ int main() {
         write_to_file(particle_list1, time);
 
     }
+
+    clock_t end = clock();
+    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    printf("Took %lf seconds \n", time_spent);
 
     return 0;
 }
