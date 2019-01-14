@@ -30,15 +30,15 @@ with open('../../output/result.txt','r') as csvfile:
 plt.subplot(121)
 for y in ys:
 	plt.plot(x, ys[y])
-	plt.xlabel('Time')
-	plt.ylabel('Distance travelled')	
+	plt.xlabel('Time (s)')
+	plt.ylabel('Distance travelled (m)')	
 
 plt.subplot(122)
 
 for y in ys3:
 	plt.plot(x, ys3[y])
-	plt.xlabel('Time')
-	plt.ylabel('Speed')
+	plt.xlabel('Time (s)')
+	plt.ylabel('Speed (m/s)')
 plt.show()
 
 
