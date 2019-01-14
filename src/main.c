@@ -43,9 +43,9 @@ void calc_x(particle* particles, int size) {
         particles[i].x = particles[i].x + particles[i].velocity * TIME_STEP;
 
 
-        if (particles[i].x > ROADLENGTH) {
-            particles[i].x -= ROADLENGTH;
-        }
+//        if (particles[i].x > ROADLENGTH) {
+//            particles[i].x -= ROADLENGTH;
+//        }
 
 
         //Checking if the car in front is not to close to cause a collision
