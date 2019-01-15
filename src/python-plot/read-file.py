@@ -75,5 +75,5 @@ def animate(i):
     return point, point2
 
 ani = animation.FuncAnimation(fig, animate, frames = 2000, interval=1, blit = False, repeat = False)
-ani.save('lanechange2.mp4',writer=writer)
+#ani.save('lanechange2.mp4',writer=writer)
 plt.show()
