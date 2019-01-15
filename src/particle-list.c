@@ -63,6 +63,7 @@ particle_list read_from_file() {
             particles[i].density = 0;
         }
         particles[i].vy = 0;
+        particles[i].overtake = 0;
     }
 
     fclose(fp);
