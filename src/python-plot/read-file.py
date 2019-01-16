@@ -4,6 +4,9 @@ from matplotlib import animation
 import csv
 import numpy as np
 
+Writer = animation.writers['ffmpeg']
+writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
+
 colors = ['r', 'g', 'b', 'y']
 x = []
 ys = dict()
@@ -34,15 +37,15 @@ for y in ys:
 	plt.ylabel('Distance travelled')	
 
 plt.subplot(122)
-for y in ys3:
-	plt.plot(x, ys3[y])
+for y in ys2:
+	plt.plot(x, ys2[y])
 	plt.xlabel('Time')
-	plt.ylabel('Speed')
+	plt.ylabel('Y position')
 plt.show()
     
 # First set up the figure, the axis, and the plot element we want to animate
 fig = plt.figure()
-ax = plt.axes(xlim=(0, 10000), ylim=(-100, 100))
+ax = plt.axes(xlim=(0, 6000), ylim=(-100, 100))
 
 t1 = np.zeros((len(x),len(ys)))
 t2 = np.zeros((len(x),len(ys)))
@@ -63,6 +66,7 @@ def animate(i):
     point.set_data(x, y)
     return point
 
-ani = animation.FuncAnimation(fig, animate, interval=1, blit = False, repeat = False)
+ani = animation.FuncAnimation(fig, animate, interval=1, blit = False, repeat = False, frames=500)
+ani.save('im.mp4', writer=writer)
 
 plt.show()
