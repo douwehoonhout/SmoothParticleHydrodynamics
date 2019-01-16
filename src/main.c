@@ -161,7 +161,7 @@ void calc_v(particle* particles, int size, int time){
         }
     }
 
-    particles[size/2 - 1].ve = 25;
+    particles[size - 1].ve = 25;
 
 //    if (time % 200 > 100) {
 //        particles[size - 1].ve = 20;

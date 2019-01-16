@@ -5,7 +5,7 @@ import csv
 import numpy as np
 
 Writer = animation.writers['ffmpeg']
-writer = Writer(fps=15, metadata=dict(artist='Me'), bitrate=1800)
+writer = Writer(fps=15,bitrate=5000)
 
 colors = ['r', 'g', 'b', 'y']
 x = []
@@ -37,36 +37,43 @@ for y in ys:
 	plt.ylabel('Distance travelled')	
 
 plt.subplot(122)
-for y in ys2:
-	plt.plot(x, ys2[y])
+for y in ys3:
+	plt.plot(x, ys3[y])
 	plt.xlabel('Time')
-	plt.ylabel('Y position')
+	plt.ylabel('Speed')
 plt.show()
     
 # First set up the figure, the axis, and the plot element we want to animate
 fig = plt.figure()
-ax = plt.axes(xlim=(0, 6000), ylim=(-100, 100))
+fig.set_size_inches(12.,4.)
+ax = plt.axes(xlim=(0, 8000), ylim=(-3.7/2, 1.5*3.7))
 
 t1 = np.zeros((len(x),len(ys)))
 t2 = np.zeros((len(x),len(ys)))
+
+
 for n in range(0,len(ys)):
     temp = ys[n]
     temp2 = ys2[n]
     for i in range(0,len(x)):
         t1[i][n] = temp[i]
         t2[i][n] = temp2[i]
+
 print(t1[0])
 print(t2[0])
-point, = ax.plot(t1[0],t2[0],'o')
+point, = ax.plot(t1[0,:-1],t2[0,:-1],'o')
+point2, = ax.plot(t1[0,-1],t2[0,-1],'yo')
 
 # animation function.  This is called sequentially
 def animate(i):
-    x = t1[i]
-    y = t2[i]
+    x = t1[i,:-1]
+    y = t2[i,:-1]
+    x2 = t1[i,-1]
+    y2 = t2[i,-1]
     point.set_data(x, y)
-    return point
+    point2.set_data(x2,y2)
+    return point, point2
 
-ani = animation.FuncAnimation(fig, animate, interval=1, blit = False, repeat = False, frames=500)
-ani.save('im.mp4', writer=writer)
-
+ani = animation.FuncAnimation(fig, animate, frames = 2000, interval=1, blit = False, repeat = False)
+#ani.save('lanechange2.mp4',writer=writer)
 plt.show()
