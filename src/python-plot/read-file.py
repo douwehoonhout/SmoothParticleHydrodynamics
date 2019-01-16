@@ -3,6 +3,9 @@ from matplotlib import animation
 import csv
 import numpy as np
 
+Writer = animation.writers['ffmpeg']
+writer = Writer(fps=15,bitrate=5000)
+
 colors = ['r', 'g', 'b', 'y']
 x = []
 ys = dict()
@@ -40,7 +43,8 @@ plt.show()
     
 # First set up the figure, the axis, and the plot element we want to animate
 fig = plt.figure()
-ax = plt.axes(xlim=(0, 2500), ylim=(-2, 2))
+fig.set_size_inches(12.,4.)
+ax = plt.axes(xlim=(0, 500), ylim=(-2, 2))
 
 t1 = np.zeros((len(x),len(ys)))
 t2 = np.zeros((len(x),len(ys)))
@@ -61,6 +65,7 @@ def animate(i):
     point.set_data(x, y)
     return point
 
-ani = animation.FuncAnimation(fig, animate, interval=1, blit = False, repeat = False)
+ani = animation.FuncAnimation(fig, animate, frames = 700, interval=1, blit = False, repeat = False)
+# ani.save('lanechange2.mp4',writer=writer)
 
 plt.show()
