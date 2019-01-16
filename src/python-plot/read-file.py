@@ -4,6 +4,9 @@ from matplotlib import animation
 import csv
 import numpy as np
 
+Writer = animation.writers['ffmpeg']
+writer = Writer(fps=15,bitrate=5000)
+
 colors = ['r', 'g', 'b', 'y']
 x = []
 ys = dict()
@@ -27,14 +30,6 @@ with open('../../output/result.txt','r') as csvfile:
 			index = row[0].index('t')
 			x.append(float(row[0][index + 4:]))
 
-plt.subplot(121)
-for y in ys:
-	plt.plot(x, ys[y])
-	plt.xlabel('Time (s)')
-	plt.ylabel('Distance travelled (m)')	
-
-plt.subplot(122)
-
 for y in ys3:
 	plt.plot(x, ys3[y])
 	plt.xlabel('Time (s)')
@@ -45,7 +40,8 @@ plt.show()
     
 # First set up the figure, the axis, and the plot element we want to animate
 fig = plt.figure()
-ax = plt.axes(xlim=(0, 5000), ylim=(-2, 2))
+fig.set_size_inches(14.,6.)
+ax = plt.axes(xlim=(0, 1000), ylim=(-2, 2))
 
 t1 = np.zeros((len(x),len(ys)))
 t2 = np.zeros((len(x),len(ys)))
@@ -66,6 +62,7 @@ def animate(i):
     point.set_data(x, y)
     return point
 
-ani = animation.FuncAnimation(fig, animate, interval=1, blit = False, repeat = False)
+ani = animation.FuncAnimation(fig, animate, frames = 500, interval=1, blit = False, repeat = False)
+ani.save('lanechange2.mp4',writer=writer)
 
 plt.show()

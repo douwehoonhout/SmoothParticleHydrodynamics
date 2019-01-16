@@ -23,9 +23,9 @@ double calculateDistance(double position1, double position2, double roadLength) 
 
 // Provide roadlength for cars that drive in a circle
 double smoothing_function(particle particle1, particle particle2, int h, double roadLength) {
-//    double distance = calculateDistance(particle1.x, particle2.x, roadLength);
-//    double r = distance / (double) h;
-    double r = fabs(particle1.x-particle2.x) / (double) h;
+    double distance = calculateDistance(particle1.x, particle2.x, roadLength);
+    double r = distance / (double) h;
+//    double r = fabs(particle1.x-particle2.x) / (double) h;
 
     if (r >= 2) {
         return 0;

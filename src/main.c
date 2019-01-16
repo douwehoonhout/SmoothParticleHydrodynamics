@@ -8,7 +8,7 @@
 #include "smoothing-function.h"
 
 #define DECELERATE 8.0
-#define H 50.0
+#define H 11.0
 #define MAX_SPEED 33.33
 #define NR_ITERATIONS 2000
 #define TAU 6.0
@@ -43,9 +43,9 @@ void calc_x(particle* particles, int size) {
         particles[i].x = particles[i].x + particles[i].velocity * TIME_STEP;
 
 
-//        if (particles[i].x > ROADLENGTH) {
-//            particles[i].x -= ROADLENGTH;
-//        }
+        if (particles[i].x > ROADLENGTH) {
+            particles[i].x -= ROADLENGTH;
+        }
 
 
         //Checking if the car in front is not to close to cause a collision
@@ -91,9 +91,9 @@ void calc_v(particle* particles, int size, int time){
         }
     }
 
-    if (time % 80 > 40) {
-        particles[size - 1].ve = 0;
-    }
+//    if (time % 80 > 40) {
+//        particles[size - 1].ve = 0;
+//    }
 
     // Calculate new velocities
     for (int i = 0; i < size; i++) {
