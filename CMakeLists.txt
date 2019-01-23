@@ -11,5 +11,5 @@ if (OPENMP_FOUND)
 endif()
 
 
-add_executable(SmoothParticleHydrodynamics src/main.c src/dynamic-array.c src/dynamic-array.h src/particle.c src/particle.h src/particle-list.h src/smooting-function.h src/smoothing-function.c src/particle-list.c)
+add_executable(SmoothParticleHydrodynamics src/main.c src/particle.c src/particle.h src/particle-list.h src/smoothing-function.h src/smoothing-function.c src/particle-list.c)
 target_link_libraries(SmoothParticleHydrodynamics m)
