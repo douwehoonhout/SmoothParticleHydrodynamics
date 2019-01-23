@@ -44,7 +44,7 @@ plt.show()
 # First set up the figure, the axis, and the plot element we want to animate
 fig = plt.figure()
 fig.set_size_inches(12.,4.)
-ax = plt.axes(xlim=(0, 500), ylim=(-2, 2))
+ax = plt.axes(xlim=(0, 1000), ylim=(-2, 2))
 
 t1 = np.zeros((len(x),len(ys)))
 t2 = np.zeros((len(x),len(ys)))

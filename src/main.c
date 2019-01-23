@@ -16,7 +16,6 @@
 #define RHO_C 0.025
 #define RHO_J 0.125
 
-// WORKS FOR 1D
 void calc_density(particle* particles, int size) {
     for (int i = 0; i < size; i++) {
         double rho = 0;
@@ -26,11 +25,7 @@ void calc_density(particle* particles, int size) {
             }
             rho += -(particles[i].velocity - particles[j].velocity) * smoothing_function(particles[i], particles[j], H);
         }
-        if (particles[i].density < 0) {
-            printf("Rho: %lf Density: %lf \n", rho, particles[i].density);
-        }
         particles[i].density = particles[i].density + rho*TIME_STEP;
-
     }
 }
 
@@ -42,28 +37,10 @@ void calc_x(particle* particles, int size){
 }
 
 void calc_v(particle* particles, int size, int time){
-
-// For adjusting the speed of the front car
-/*
-        int temp;
-        for (int i =0; i <size; i++){
-            for (int j =0; j <size; j++){
-                if (particles[i].y == particles[i].y && particles[i].x >= particles[j].x){
-                    continue;
-                }
-                else{
-                    temp = 0;
-                }
-            }
-            if (temp != 1){
-
-            }
-        }
-*/
-
+    // Calculate desired velocity based on density
     for (int i = size-1; i >= 0; i--) {
         double left_hand_side = (RHO_C*MAX_SPEED) / (RHO_J - RHO_C);
-        double right_hand_side = RHO_J/particles[i].density - 1.0;
+        double right_hand_side = RHO_J / particles[i].density - 1.0;
         particles[i].ve = left_hand_side * right_hand_side;
         if (particles[i].ve < 0) {
             particles[i].ve = 0;
@@ -98,8 +75,6 @@ void calc_v(particle* particles, int size, int time){
 int main() {
 
     double time = 0;
-
-    omp_set_num_threads(4);
     particle_list particle_list1 = read_from_file();
     particle* particles = particle_list1.particles;
     initial_write(particle_list1);
@@ -112,7 +87,6 @@ int main() {
 
         time += TIME_STEP;
         write_to_file(particle_list1, time);
-
     }
 
     return 0;
