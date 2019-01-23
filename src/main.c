@@ -78,6 +78,10 @@ void calc_density(particle* particles, int size) {
 
         particles[i].density = particles[i].density + rho*TIME_STEP;
 
+        // If density on the adjacent lane is lower than the current lane, then switch lanes.
+        if (temp.density < particles[i].density && particles[i].velocity < .9 * MAX_SPEED) {
+            lane_change(particles, size, i);
+        }
     }
 }
 
