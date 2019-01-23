@@ -58,12 +58,13 @@ particle_list read_from_file() {
 
     }
     for (int i = 0; i < lines; i++){
-        if (i == lines - 1){
+        particles[i].density = 1. / (particles[i + 1].x - particles[i].x);
+        if (particles[i].density < 0){
             particles[i].density = 0;
         }
-        else {
-            particles[i].density = 1. / (particles[i + 1].x - particles[i].x);
-        }
+
+        particles[i].vy = 0;
+        particles[i].overtake = 0;
     }
 
     fclose(fp);

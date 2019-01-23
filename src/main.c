@@ -3,8 +3,8 @@
 #include <omp.h>
 #include "particle.h"
 #include <math.h>
+#include <stdbool.h>
 #include "particle-list.h"
-#include "line-change.h"
 #include "smoothing-function.h"
 
 #define DECELERATE 8.0
@@ -15,17 +15,69 @@
 #define TIME_STEP  0.5
 #define RHO_C 0.025
 #define RHO_J 0.125
+#define LANEWIDTH 3.7
+#define LANECHANGETIME 5
+#define MULTIPLE_LANES false
+
+// Create clone on adjacent lane to calculate the density there
+particle createClone(particle particle1) {
+    particle temp;
+    temp.x = particle1.x;
+    temp.density = 0;
+    if (particle1.y == 0){
+        temp.y = LANEWIDTH;
+    }
+    else if(particle1.y == LANEWIDTH){
+        temp.y = 0;
+    }
+    else {
+        temp.y = LANEWIDTH / 2;
+    }
+    return temp;
+}
+
+void lane_change(particle* particles, int size, int i) {
+    int safeToOvertake = 1;
+    for(int j  = 0; j < size; j++) {
+        if (i == j) {
+            continue;
+        }
+
+        // Only check if it is safe with cars on the other lane
+        if (particles[j].y == particles[i].y) {
+            continue;
+        }
+
+        // Check whether there is enough distance to make the lane change
+        if (fabs(particles[i].x - particles[j].x) < 100) {
+            safeToOvertake = 0;
+            break;
+        }
+
+    }
+    if (safeToOvertake == 1) {
+        particles[i].overtake = 1;
+    }
+}
 
 void calc_density(particle* particles, int size) {
     for (int i = 0; i < size; i++) {
         double rho = 0;
+        particle temp = createClone(particles[i]);
         for(int j = 0; j < size; j++) {
             if (i == j) {
                 continue;
             }
             rho += -(particles[i].velocity - particles[j].velocity) * smoothing_function(particles[i], particles[j], H);
+            temp.density += smoothing_function2(temp, particles[j], H);
         }
+
+        if (temp.y == 0 && temp.density < RHO_C){
+            lane_change(particles, size, i);
+        }
+
         particles[i].density = particles[i].density + rho*TIME_STEP;
+
     }
 }
 
@@ -33,6 +85,39 @@ void calc_density(particle* particles, int size) {
 void calc_x(particle* particles, int size){
     for (int i = 0; i < size; i++) {
         particles[i].x = particles[i].x + particles[i].velocity * TIME_STEP;
+    }
+}
+
+void calc_y(particle* particles, int size) {
+    for (int i = 0; i < size; i++) {
+
+        if (particles[i].overtake == 0) {
+            continue;
+        }
+
+        if (particles[i].overtake == 1) {
+            particles[i].y += particles[i].vy * TIME_STEP;
+        }
+
+        if (particles[i].y > 3.7) {
+            particles[i].y = 3.7;
+            particles[i].overtake = 0;
+            particles[i].density = 0;
+            for (int j = 0; j < size; j++) {
+                particles[i].density += smoothing_function2(particles[i], particles[j], H);
+            }
+
+        }
+
+        if (particles[i].y < 0) {
+            particles[i].y = 0;
+            particles[i].overtake = 0;
+            particles[i].density = 0;
+            for (int j = 0; j < size; j++) {
+                particles[i].density += smoothing_function2(particles[i], particles[j], H);
+            }
+        }
+
     }
 }
 
@@ -71,6 +156,19 @@ void calc_v(particle* particles, int size, int time){
     }
 }
 
+void calc_vy(particle* particles, int size){
+    double acceleration = 4 * LANEWIDTH / pow(LANECHANGETIME, 2);
+    for (int i = 0; i < size; i++){
+        if (particles[i].overtake == 1){
+            if (particles[i].y < LANEWIDTH / 2){
+                particles[i].vy += acceleration * TIME_STEP;
+            }
+            else {
+                particles[i].vy -= acceleration * TIME_STEP;
+            }
+        }
+    }
+}
 
 int main() {
 
@@ -83,7 +181,13 @@ int main() {
 
         calc_density(particles, particle_list1.size);
         calc_x(particles, particle_list1.size);
+        if (MULTIPLE_LANES) {
+            calc_y(particles, particle_list1.size);
+        }
         calc_v(particles, particle_list1.size, (int) time);
+        if (MULTIPLE_LANES) {
+            calc_vy(particles, particle_list1.size);
+        }
 
         time += TIME_STEP;
         write_to_file(particle_list1, time);
